@@ -112,9 +112,10 @@ svg.art [fill="#e8756a"]{fill:var(--wall)}svg.art [fill="#d92b25"]{fill:var(--ma
   </div>
   <h1>महफ़िल</h1>
 
+  <div id="about" hidden role="dialog" aria-modal="true" aria-label="About"><div class="abc"><button id="abx" aria-label="Close">✕</button><h2>महफ़िल</h2><p>Mahfil is a salon where hair gets cut and music keeps playing. You come here not just for a haircut, but to sit, listen and talk like you are among your own people.</p><p>The same warmth as the old neighbourhood hangout, with clean, careful service and good music.</p></div></div>
   <div id="tl" hidden></div>
   <div id="lyr" hidden aria-live="polite"></div>
-  <div class="foot"><button class="lnk" id="mdb" aria-label="Mood" title="Mood"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button><a class="lnk" href="about.html" aria-label="About" title="About"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></a></div>
+  <div class="foot"><button class="lnk" id="mdb" aria-label="Mood" title="Mood"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg></button><button class="lnk" id="abl" aria-label="About" title="About"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg></button></div>
   <div class="player" role="group" aria-label="Music player">
     <div class="cover" id="cover"></div>
     <div class="meta" id="meta" role="button" tabindex="0" aria-label="View all songs"><b id="song"></b><small id="artist"></small>
@@ -128,7 +129,18 @@ svg.art [fill="#e8756a"]{fill:var(--wall)}svg.art [fill="#d92b25"]{fill:var(--ma
 </header>
 
 
-<script src="songs.js"></script>
+<script>
+// Song details for Mahfil. Edit this file or use the Songs tab in admin.html.
+// n = title, a = artist, d = length in seconds (auto-corrected from the audio),
+// src = file path, c = cover image shown in the player (optional), m = genre (punjabi, haryanvi, bollywood, lofi, bhojpuri, mix), h:1 = hidden
+var tracks=[
+  {n:"Guzarish",a:"Satinder Sartaaj",d:240,src:"music/Guzarish - Satinder Sartaaj.mp3",c:"img/guzarish.jpg",m:"punjabi"},
+  {n:"Udaarian",a:"Satinder Sartaaj",d:240,src:"music/Udaarian - Satinder Sartaaj.mp3",c:"img/udaarian.jpg",m:"punjabi"}
+];
+
+// Lyrics, one list per song in the same order as above, e.g. [["line 1","line 2"],[]]
+var LY=[[],[]];
+</script>
 <script>
 var PHONE="919999999999"; // put your WhatsApp number here (with country code, e.g. 91)
 var _h=tracks.map(function(t){return !!t.h});LY=LY.filter(function(_,k){return !_h[k]});tracks=tracks.filter(function(t){return !t.h});
@@ -138,14 +150,15 @@ var i=0,pos=0,on=false,tm,bad=false;
 var $=function(x){return document.getElementById(x)};
 function fmt(s){s=Math.floor(s);return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
 function lyr(){var L=LY[i]||[],e=$("lyr");if(!L.length){e.hidden=true;return}e.hidden=false;var k=Math.min(L.length-1,Math.floor(pos/tracks[i].d*L.length));e.innerHTML="";[k-1,k,k+1].forEach(function(j,n){var p=document.createElement("p");p.textContent=L[j]||"";if(n==1)p.className="cur";e.appendChild(p)})}
-function draw(){lyr();var t=tracks[i];$("song").textContent=t.n;$("artist").textContent=bad?"⚠ Can't load "+t.src+" (code "+ec+")":t.a;$("fill").style.width=(pos/t.d*100)+"%";$("time").textContent=fmt(pos)+" / "+fmt(t.d);$("pp").innerHTML=on?PA:PL;$("cover").style.backgroundImage=(t.c?"url('"+encodeURI(t.c)+"'),":"")+"conic-gradient(#f5b63c,#d92b25,#3f6fb5,#f5b63c)";$("cover").style.backgroundSize="cover";$("cover").style.backgroundPosition="center";$("cover").className="cover"+(on?" spin":"")}
-function tick(){if(au.readyState>0&&isFinite(au.duration)){pos=au.currentTime;tracks[i].d=au.duration;if(au.ended){go(1);return}}else{pos++;if(pos>=tracks[i].d){go(1)}}draw()}
-function play(v){if(v&&bad){bad=false;au.src=encodeURI(tracks[i].src)}on=v;clearInterval(tm);if(on){tm=setInterval(tick,1000);var r=au.play();if(r&&r.catch)r.catch(function(){})}else au.pause();draw()}
+function draw(){lyr();var t=tracks[i];$("song").textContent=t.n;$("artist").textContent=bad?"⚠ Can't load "+t.src+" (code "+ec+")":t.a;$("fill").style.width=(pos/t.d*100)+"%";$("time").textContent=(on&&!bad&&au.readyState<2)?"Loading...":fmt(pos)+" / "+fmt(t.d);$("pp").innerHTML=on?PA:PL;$("cover").style.backgroundImage=(t.c?"url('"+encodeURI(t.c)+"'),":"")+"conic-gradient(#f5b63c,#d92b25,#3f6fb5,#f5b63c)";$("cover").style.backgroundSize="cover";$("cover").style.backgroundPosition="center";$("cover").className="cover"+(on?" spin":"")}
+function tick(){if(au.readyState>0&&isFinite(au.duration)){pos=au.currentTime;tracks[i].d=au.duration;if(au.ended){go(1);return}}draw()}
+function pl(){au.muted=false;au.volume=1;var r=au.play();if(r&&r.catch)r.catch(function(e){if(e&&e.name==="AbortError")return;on=false;clearInterval(tm);if(!e||e.name!=="NotAllowedError"){ec=(e&&e.name)||"play";bad=true}draw()})}
+function play(v){if(v&&bad){bad=false;au.src=encodeURI(tracks[i].src)}on=v;clearInterval(tm);if(on){tm=setInterval(tick,500);pl()}else au.pause();draw()}
 var pool=null;
 var ec=0;
 au.addEventListener("error",function(){var e=au.error;if(!e||e.code===1)return;ec=e.code;bad=true;on=false;clearInterval(tm);draw()});
 au.addEventListener("loadedmetadata",function(){if(bad){bad=false;draw()}});
-function go(k){var P=pool||tracks.map(function(_,x){return x}),p=P.indexOf(i);if(p<0)p=0;i=P[(p+k+P.length)%P.length];pos=0;bad=false;au.src=encodeURI(tracks[i].src);if(on){var r=au.play();if(r&&r.catch)r.catch(function(){})}draw()}
+function go(k){var P=pool||tracks.map(function(_,x){return x}),p=P.indexOf(i);if(p<0)p=0;i=P[(p+k+P.length)%P.length];pos=0;bad=false;au.src=encodeURI(tracks[i].src);if(on){pl()}draw()}
 function dec(x){var e=x[0],d=x.subarray(1),enc=e==0?"iso-8859-1":e==1?((d[0]==254&&d[1]==255)?"utf-16be":"utf-16le"):e==2?"utf-16be":"utf-8";return new TextDecoder(enc).decode(d).replace(/\0/g,"").trim()}
 async function tags(src){try{var r=await fetch(encodeURI(src),{headers:{Range:"bytes=0-262143"}});if(!r.ok)return null;var b=new Uint8Array(await r.arrayBuffer());if(String.fromCharCode(b[0],b[1],b[2])!=="ID3")return null;var v=b[3],end=Math.min(b.length,10+((b[6]<<21)|(b[7]<<14)|(b[8]<<7)|b[9])),p=10,out={};while(p+10<end){var id=String.fromCharCode(b[p],b[p+1],b[p+2],b[p+3]);if(!/^[A-Z0-9]{4}$/.test(id))break;var sz=v==4?((b[p+4]<<21)|(b[p+5]<<14)|(b[p+6]<<7)|b[p+7]):(b[p+4]*16777216+(b[p+5]<<16)+(b[p+6]<<8)+b[p+7]);if(p+10+sz>b.length)break;if(id=="TIT2"||id=="TPE1")out[id]=dec(b.subarray(p+10,p+10+sz));p+=10+sz}return out}catch(e){return null}}
 // read title and artist automatically from the mp3 ID3 tags (falls back to the names above if no tag)
@@ -173,6 +186,7 @@ setTimeout(ready,8000);
 $("pp").onclick=function(){play(!on)};
 $("nx").onclick=function(){go(1)};$("prev").onclick=function(){go(-1)};
 $("bar").onclick=function(e){e.stopPropagation();var r=this.getBoundingClientRect();pos=Math.floor((e.clientX-r.left)/r.width*tracks[i].d);if(au.readyState>0)au.currentTime=pos;draw()};
+$("abl").onclick=function(){$("about").hidden=false};$("abx").onclick=function(){$("about").hidden=true};$("about").onclick=function(e){if(e.target===this)this.hidden=true};
 draw();
 </script>
 </body>
