@@ -1,4 +1,4 @@
-// Song details for Mahfil. Edit this file or use the Songs tab in admin.html.
+// Song details for Mahfil. Edit this file to add or change songs.
 // n = title, a = artist, d = length in seconds (auto-corrected from the audio),
 // src = file path, c = cover image shown in the player (optional), m = genre (punjabi, haryanvi, bollywood, lofi, bhojpuri, mix), h:1 = hidden
 var tracks=[
