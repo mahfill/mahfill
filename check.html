@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Mahfil song check</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#faf5ef;color:#2a1410;line-height:1.5}
+@media (prefers-color-scheme:dark){body{background:#170b0f;color:#f7e8de}}
+h1{font-size:1.2rem;margin:0 0 4px}.sub{opacity:.75;margin:0 0 14px;font-size:.9rem}
+.s{border:1px solid #cdb8aa;border-radius:12px;padding:12px;margin-bottom:10px;word-break:break-all}
+.ok{border-color:#1a9e2f}.bad{border-color:#d92b25}
+b.r{display:block;margin-bottom:4px}
+code{font-size:.82rem}
+</style>
+<script src="songs.js"></script>
+</head>
+<body>
+<h1>Song file check</h1>
+<p class="sub">Tests every song listed in songs.js and tells you what is wrong.</p>
+<div id="out"></div>
+<script>
+var out=document.getElementById("out");
+function card(t){var d=document.createElement("div");d.className="s";d.innerHTML="<b class='r'>Checking...</b><code></code>";d.lastChild.textContent=t.src;out.appendChild(d);return d}
+function res(d,ok,msg){d.className="s "+(ok?"ok":"bad");d.firstChild.textContent=(ok?"\u2705 ":"\u274c ")+msg}
+function kb(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.round(n/1024)+" KB"}
+if(typeof tracks==="undefined"){out.textContent="\u274c songs.js did not load. Put songs.js in the same folder as index.html."}
+else tracks.forEach(function(t){
+  var d=card(t);
+  fetch(encodeURI(t.src)).then(function(r){
+    if(!r.ok){res(d,false,"File not found (HTTP "+r.status+"). Check the file name and folder, including capital letters and spaces.");return}
+    return r.blob().then(function(b){
+      if(b.size<10000){res(d,false,"File found but only "+b.size+" bytes. It is empty or the upload failed. Upload the real mp3 again.");return}
+      var a=new Audio();a.preload="metadata";
+      a.onloadedmetadata=function(){res(d,true,"Works. Size "+kb(b.size)+", length "+Math.floor(a.duration/60)+":"+("0"+Math.floor(a.duration%60)).slice(-2))};
+      a.onerror=function(){res(d,false,"File is "+kb(b.size)+" but this browser cannot read it as audio. Convert it to a normal mp3 or m4a.")};
+      a.src=URL.createObjectURL(b);
+    });
+  }).catch(function(e){res(d,false,"Could not fetch the file: "+e.message)});
+});
+</script>
+</body>
+</html>
