@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>महफ़िल</title>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Hind:wght@300;400;600&family=Josefin+Sans:wght@300&display=swap" rel="stylesheet">
+<style>
+:root{--wall:#e8756a;--main:#d92b25;--dark:#2a1311;--awn:#7a1511;--awn2:#e32d2d;--sky:#3f6fb5;--leaf:#2f5a2a;--leaf2:#3a6b32;--shade:#3c0a08;--pl1:rgba(150,72,62,.55);--pl2:rgba(105,42,38,.78);--tlbg:rgba(80,20,16,.94);--bg:#fff7ef;--text:#2a1410;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root{--bg:#1d0e0c;--text:#fbe9dd}}
+html{height:100%}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Hind',system-ui,sans-serif;background:var(--bg);color:var(--text)}
+button:focus-visible,#meta:focus-visible{outline:3px solid #f5b63c;outline-offset:2px}
+h1,h2{font-family:'Rozha One',serif;font-weight:400}
+h2{font-size:2rem;margin:0 0 6px}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;background:linear-gradient(var(--sky) 0 22%,var(--wall) 22% 100%);display:flex;align-items:center;justify-content:center}
+.hero svg.art{position:absolute;inset:0;width:100%;height:100%}
+svg.art [fill="#e8756a"]{fill:var(--wall)}
+svg.art [fill="#d92b25"]{fill:var(--main)}
+svg.art [fill="#2a1311"]{fill:var(--dark)}
+svg.art [fill="#7a1511"]{fill:var(--awn)}
+svg.art [fill="#e32d2d"]{fill:var(--awn2)}
+svg.art [fill="#2f5a2a"]{fill:var(--leaf)}
+svg.art [fill="#3a6b32"]{fill:var(--leaf2)}
+svg.art stop{stop-color:var(--shade)}
+h1{position:relative;color:#fff;font-size:clamp(3rem,13vw,8rem);line-height:1.05;text-align:center;margin:0;text-shadow:0 4px 0 rgba(90,10,8,.5);user-select:none}
+.top{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);left:14px;color:#fff;z-index:3}
+#clk{font-family:'Josefin Sans','Hind',sans-serif;font-weight:300;font-size:1.2rem;letter-spacing:.08em;white-space:nowrap}
+
+/* footer buttons */
+.foot{position:absolute;left:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 6px);display:flex;gap:10px;z-index:4}
+.lnk{display:inline-flex;align-items:center;gap:6px;background:none;border:0;color:#fff;font:inherit;font-weight:600;cursor:pointer;padding:8px 4px}
+.foot .lnk{color:var(--wall);filter:drop-shadow(0 1px 2px var(--shade));transition:color .4s,transform .15s}
+.foot .lnk:hover,.foot .lnk:active{color:#fff;transform:scale(1.1)}
+
+/* player */
+.player{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 54px);transform:translateX(-50%);width:min(460px,calc(100% - 28px));min-width:280px;display:flex;gap:12px;align-items:center;padding:10px 18px 10px 12px;border-radius:44px;background:linear-gradient(90deg,var(--pl1),var(--pl2));border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(14px);box-shadow:0 8px 30px rgba(0,0,0,.25);color:#fff;z-index:3}
+.cover{width:56px;height:56px;border-radius:50%;flex:none;background:conic-gradient(#f5b63c,#d92b25,#3f6fb5,#f5b63c);background-size:cover;background-position:center;animation:spin 6s linear infinite;animation-play-state:paused}
+.cover.spin{animation-play-state:running}
+@keyframes spin{to{transform:rotate(360deg)}}
+.meta{flex:1;min-width:0;cursor:pointer}
+.meta b{display:block;font-size:.95rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#artist{display:block;margin-top:2px;font-size:.8rem;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#time{font-size:.72rem;opacity:.75}
+.bar{height:4px;margin:8px 0 5px;background:rgba(255,255,255,.35);border-radius:2px;cursor:pointer}
+.bar i{position:relative;display:block;height:100%;width:0;background:#fff;border-radius:2px}
+.bar i::after{content:"";position:absolute;right:-4px;top:-3px;width:10px;height:10px;border-radius:50%;background:#fff}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{display:grid;place-items:center;border:0;background:none;color:#fff;font-size:1.1rem;cursor:pointer;padding:6px;opacity:.9}
+.ctl button:hover{opacity:1}
+.ctl svg{width:17px;height:17px}
+.ctl .pp{width:44px;height:44px;border-radius:50%;background:#fff;color:#3a1410;opacity:1}
+.ctl .pp svg{width:22px;height:22px}
+
+/* song list + lyrics */
+#tl,#lyr{position:absolute;bottom:calc(env(safe-area-inset-bottom,0px) + 124px);color:#fff}
+#tl[hidden],#lyr[hidden],#about[hidden],#md[hidden]{display:none}
+#tl{left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 28px));max-height:50vh;overflow:auto;background:var(--tlbg);backdrop-filter:blur(8px);border-radius:20px;padding:6px;z-index:5;box-shadow:0 12px 32px rgba(0,0,0,.35)}
+#tl button{display:block;width:100%;text-align:left;background:none;border:0;color:#fff;font:inherit;padding:10px 12px;border-radius:12px;cursor:pointer}
+#tl button:hover{background:rgba(255,255,255,.1)}
+#tl button.on{background:rgba(255,255,255,.2)}
+#tl small{display:block;opacity:.75}
+#lyr{left:14px;right:14px;text-align:center;z-index:3;text-shadow:0 2px 8px rgba(0,0,0,.7);pointer-events:none}
+#lyr p{margin:4px 0;opacity:.6;font-size:1rem;min-height:1.2em;transition:all .2s}
+#lyr p.cur{opacity:1;font-size:1.35rem;font-weight:600}
+
+/* about dialog */
+#about{position:absolute;inset:0;z-index:9;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.45);backdrop-filter:blur(4px)}
+.abc{position:relative;max-width:480px;width:100%;background:var(--tlbg);color:#fff;border-radius:22px;padding:28px 24px;line-height:1.7}
+.abc h2{color:#fff;margin:0 0 12px}
+.abc p{margin:0 0 12px;opacity:.92}
+#abx{position:absolute;top:10px;right:12px;background:none;border:0;color:#fff;font-size:1.2rem;cursor:pointer;padding:6px}
+
+/* loader + genre picker */
+#ld,#md{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:#fff;transition:opacity .5s}
+#ld{z-index:100;background:linear-gradient(var(--main),var(--awn) 60%,var(--dark))}
+#ld.out{opacity:0;pointer-events:none}
+#md{z-index:90;background:var(--pl2);backdrop-filter:blur(6px)}
+.ldlogo{font-family:'Rozha One',serif;font-weight:400;font-size:clamp(3rem,16vw,6.5rem);line-height:1.1;color:#fff;text-shadow:0 4px 0 rgba(90,10,8,.5);animation:pls 1.4s ease-in-out infinite}
+@keyframes pls{50%{opacity:.55;transform:scale(.97)}}
+@media (prefers-reduced-motion:reduce){.ldlogo{animation:none}}
+.mdc{padding:20px;max-width:460px;width:100%}
+.mdc h2{color:#fff}
+.mdc p{margin:0;opacity:.85}
+.mg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:22px 0 14px}
+.mg button{position:relative;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;overflow:hidden;font:inherit;font-size:1.05rem;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 8px;cursor:pointer;text-shadow:0 1px 6px rgba(0,0,0,.6);transition:transform .15s}
+.mg button:hover{transform:translateY(-2px)}
+.mg button:active{background:rgba(255,255,255,.3);transform:scale(.97)}
+.mg button span{display:block;font-size:1.8rem}
+.mg [data-m=punjabi]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--main),var(--awn))}
+.mg [data-m=haryanvi]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--leaf2),var(--dark))}
+.mg [data-m=bollywood]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--sky),var(--awn))}
+.mg [data-m=lofi]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--awn),var(--dark))}
+.mg [data-m=bhojpuri]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--wall),var(--main))}
+.mg [data-m=mix]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--sky),var(--main))}
+.mskip{background:none;border:0;color:#fff;opacity:.75;font:inherit;cursor:pointer;padding:8px}
+.mskip:hover{opacity:1;text-decoration:underline}
+
+@media (max-width:520px){
+  .player{width:calc(100% - 28px);gap:8px;padding:8px 12px 8px 10px}
+  .cover{width:44px;height:44px}
+  .meta b{font-size:.88rem}
+  #artist{font-size:.74rem}
+  .bar{margin:6px 0 4px}
+  .ctl{gap:2px}
+  .ctl .pp{width:38px;height:38px}
+  #tl,#lyr{bottom:calc(env(safe-area-inset-bottom,0px) + 106px)}
+}
+</style>
+</head>
+<body>
+<div id="ld" role="status" aria-label="Loading"><div class="ldlogo">महफ़िल</div></div>
+<div id="md" hidden role="dialog" aria-modal="true" aria-labelledby="mdt">
+  <div class="mdc">
+    <h2 id="mdt">What do you want to listen to?</h2>
+    <p>Pick a genre and a song from it will play.</p>
+    <div class="mg">
+      <button data-m="All"><span>ALL</span>ALL</button>
+      <button data-m="punjabi"><span>🥁</span>Punjabi</button>
+      <button data-m="haryanvi"><span>🌾</span>Haryanvi</button>
+      <button data-m="bollywood"><span>🎬</span>Bollywood</button>
+      <button data-m="lofi"><span>🎧</span>Lo-fi</button>
+      <button data-m="bhojpuri"><span>🎺</span>Bhojpuri</button>
+      <button data-m="mix"><span>🔀</span>Mix</button>
+    </div>
+    <button class="mskip" id="mskip">Not now</button>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <svg class="art" viewBox="0 0 800 600" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <rect x="0" y="130" width="800" height="470" fill="#e8756a"/>
+    <rect x="90" y="150" width="520" height="440" fill="#d92b25"/>
+    <rect x="150" y="330" width="330" height="260" fill="#2a1311"/>
+    <path d="M60 300 H640 L610 340 H90Z" fill="#7a1511"/>
+    <path d="M0 330 L130 300 V380 L0 400Z" fill="#e32d2d"/>
+    <path d="M520 150 H800 V600 H640Z" fill="#2f5a2a"/>
+    <path d="M610 110 q80 -60 190 -20 v90 q-100 -20 -190 40Z" fill="#3a6b32"/>
+    <circle cx="390" cy="450" r="26" fill="#e9c9a8"/><rect x="360" y="478" width="60" height="112" rx="10" fill="#f4eee6"/>
+    <circle cx="300" cy="470" r="22" fill="#b97a54"/><rect x="278" y="492" width="44" height="98" rx="8" fill="#d9a07a"/>
+    <circle cx="700" cy="420" r="22" fill="#e9c9a8"/><rect x="676" y="444" width="48" height="156" rx="8" fill="#f4eee6"/>
+    <defs><linearGradient id="sh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c0a08" stop-opacity="0"/><stop offset="1" stop-color="#3c0a08" stop-opacity=".6"/></linearGradient></defs>
+    <rect x="0" y="420" width="800" height="180" fill="url(#sh)"/>
+  </svg>
+
+  <div class="top"><span id="clk"></span></div>
+  <h1>महफ़िल</h1>
+
+  <div id="about" hidden role="dialog" aria-modal="true" aria-label="About">
+    <div class="abc">
+      <button id="abx" aria-label="Close">✕</button>
+      <h2>महफ़िल</h2>
+      <p>Mahfil is a salon where hair gets cut and music keeps playing. You come here not just for a haircut, but to sit, listen and talk like you are among your own people.</p>
+      <p>The same warmth as the old neighbourhood hangout, with clean, careful service and good music.</p>
+    </div>
+  </div>
+
+  <div id="tl" hidden></div>
+  <div id="lyr" hidden aria-live="polite"></div>
+
+  <div class="foot">
+    <button class="lnk" id="mdb" aria-label="Mood" title="Mood">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg>
+    </button>
+    <button class="lnk" id="abl" aria-label="About" title="About">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+    </button>
+  </div>
+
+  <div class="player" role="group" aria-label="Music player">
+    <div class="cover" id="cover"></div>
+    <div class="meta" id="meta" role="button" tabindex="0" aria-label="View all songs" title="Click to view playlist">
+      <b id="song"></b>
+      <small id="artist"></small>
+      <div class="bar" id="bar"><i id="fill"></i></div>
+      <small id="time">0:00 / 0:00</small>
+    </div>
+    <div class="ctl">
+      <button id="prev" aria-label="Previous song" title="Previous"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="pp" id="pp" aria-label="Play or pause" title="Play/Pause">▶</button>
+      <button id="nx" aria-label="Next song" title="Next"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<!-- Optional external songs.js; if missing, built-in fallback tracks below will automatically load -->
+<script src="songs.js"></script>
+<script>
+// Fallback playlist so the project runs standalone even without songs.js
+if (typeof tracks === "undefined" || !Array.isArray(tracks) || !tracks.length) {
+  window.tracks = [
+    { n: "Shaam-e-Mehfil", a: "Salon Sessions • Lo-fi", m: "lofi", d: 138, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
+    { n: "Patiala Peg Vibes", a: "Desi Beats • Punjabi", m: "punjabi", d: 162, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" },
+    { n: "Purani Dilli Radio", a: "Classic • Bollywood", m: "bollywood", d: 145, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
+    { n: "Desi Thaat", a: "Folk Groove • Haryanvi", m: "haryanvi", d: 150, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" },
+    { n: "Ganga Kinare", a: "Maati Tunes • Bhojpuri", m: "bhojpuri", d: 155, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3" },
+    { n: "Chai & Scissors", a: "Mahfil • Mix", m: "mix", d: 140, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3" }
+  ];
+}
+if (typeof LY === "undefined" || !Array.isArray(LY)) {
+  window.LY = [
+    ["Mehfil mein aaj phir shaam dhal rahi hai...", "Qainchi ki awaaz aur purani dhun...", "Apno ke beech baithne ka sukoon hi kuch aur hai."],
+    ["Dhol ki thaap pe jhoomta hai shehar...", "Yaaron ki mehfil mein rang jama hai...", "Chalti rahe bas yeh dhun."],
+    ["Purane radio ki woh meethi si khanak...", "Har mod pe ek nayi kahani...", "Waqt tham sa jaata hai yahan."],
+    ["Khet khalihaan aur mitti ki khushboo...", "Apni boli, apna andaaz...", "Dil se nikli hui sargam."],
+    ["Ganga ke ghat ki thandi hawa...", "Suron mein basi apnapan ki mithaas...", "Gaate raho, muskurate raho."],
+    ["Ek cup garam chai aur halki si baarish...", "Har sur mein ek nayi taazgi...", "Swagat hai aapka Mahfil mein."]
+  ];
+}
+
+var $=function(x){return document.getElementById(x)};
+var PL='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+    PA='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
+var i=0,pos=0,on=false,bad=false,ec=0,tm,pool=null;
+
+// drop songs marked h:1 (hidden) together with their lyrics
+var _h=tracks.map(function(t){return !!t.h});
+LY=LY.filter(function(_,k){return !_h[k]});
+tracks=tracks.filter(function(t){return !t.h});
+
+var au=new Audio();
+au.crossOrigin="anonymous";
+au.preload="metadata";
+if(tracks.length)au.src=encodeURI(tracks[0].src);
+
+function fmt(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+("0"+s%60).slice(-2)}
+
+function lyr(){
+  var L=LY[i]||[],e=$("lyr");
+  if(!L.length||!tracks[i]){e.hidden=true;return}
+  e.hidden=false;
+  var dur=tracks[i].d||1;
+  var k=Math.min(L.length-1,Math.max(0,Math.floor(pos/dur*L.length)));
+  e.innerHTML="";
+  [k-1,k,k+1].forEach(function(j,n){
+    var p=document.createElement("p");
+    p.textContent=L[j]||"";
+    if(n==1)p.className="cur";
+    e.appendChild(p);
+  });
+}
+
+function draw(){
+  if(!tracks.length)return;
+  lyr();
+  var t=tracks[i],dur=t.d||1;
+  $("song").textContent=t.n;
+  $("artist").textContent=bad?"⚠ Can't load audio ("+ec+")":t.a;
+  $("fill").style.width=Math.min(100,(pos/dur*100))+"%";
+  $("time").textContent=(on&&!bad&&au.readyState<2)?"Loading...":fmt(pos)+" / "+fmt(dur);
+  $("pp").innerHTML=on?PA:PL;
+  $("cover").style.backgroundImage=(t.c?"url('"+encodeURI(t.c)+"'),":"")+"conic-gradient(#f5b63c,#d92b25,#3f6fb5,#f5b63c)";
+  $("cover").className="cover"+(on?" spin":"");
+}
+
+function tick(){
+  if(au.readyState>0&&isFinite(au.duration)){
+    pos=au.currentTime;
+    tracks[i].d=au.duration;
+    if(au.ended){go(1);return}
+  }
+  draw();
+}
+
+function pl(){
+  au.muted=false;au.volume=1;
+  var r=au.play();
+  if(r&&r.catch)r.catch(function(e){
+    if(e&&e.name==="AbortError")return;
+    on=false;clearInterval(tm);
+    if(!e||e.name!=="NotAllowedError"){ec=(e&&e.name)||"play";bad=true}
+    draw();
+  });
+}
+
+function play(v){
+  if(!tracks.length)return;
+  if(v&&bad){bad=false;au.src=encodeURI(tracks[i].src)}
+  on=v;clearInterval(tm);
+  if(on){tm=setInterval(tick,500);pl()}else au.pause();
+  draw();
+}
+
+au.addEventListener("error",function(){var e=au.error;if(!e||e.code===1)return;ec=e.code;bad=true;on=false;clearInterval(tm);draw()});
+au.addEventListener("loadedmetadata",function(){if(isFinite(au.duration))tracks[i].d=au.duration;if(bad)bad=false;draw()});
+
+function go(k){
+  if(!tracks.length)return;
+  var P=pool||tracks.map(function(_,x){return x}),p=P.indexOf(i);
+  if(p<0)p=0;
+  i=P[(p+k+P.length)%P.length];pos=0;bad=false;
+  au.src=encodeURI(tracks[i].src);
+  if(on)pl();
+  draw();
+}
+
+// song list popup
+function list(){
+  var e=$("tl");e.innerHTML="";
+  tracks.forEach(function(t,k){
+    var b=document.createElement("button");if(k==i)b.className="on";
+    var n=document.createElement("b");n.textContent=t.n;
+    var a=document.createElement("small");a.textContent=t.a;
+    b.appendChild(n);b.appendChild(a);
+    b.onclick=function(){i=k;pos=0;bad=false;au.src=encodeURI(t.src);play(true);e.hidden=true};
+    e.appendChild(b);
+  });
+}
+function tog(){var e=$("tl");if(e.hidden){list();e.hidden=false}else e.hidden=true}
+$("meta").onclick=tog;
+$("meta").onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();tog()}};
+document.addEventListener("click",function(e){if(!e.target.closest("#tl,#meta"))$("tl").hidden=true});
+
+// clock
+function clk(){var d=new Date(),h=d.getHours(),m=d.getMinutes();$("clk").textContent=(h%12||12)+":"+("0"+m).slice(-2)+(h<12?" am":" pm")}
+clk();setInterval(clk,1000);
+
+// random colour theme on every page load
+var TH="Classic Red,3,215,110,70,48;Sunset,18,260,25,85,52;Marigold,40,200,100,90,50;Lemon Soda,52,190,90,80,52;Lime Chaat,85,200,130,65,42;Banana Leaf,120,205,140,45,36;Jade,150,190,170,55,36;Mint,165,35,150,50,45;Teal Chai,180,30,200,60,34;Lagoon,190,20,170,70,40;Ocean,205,35,180,70,42;Sky Blue,215,40,150,65,50;Indigo Night,230,260,200,55,38;Ink Blue,225,235,210,60,28;Violet,265,300,150,50,45;Grape,285,330,140,45,36;Orchid,300,20,130,45,50;Magenta,320,200,150,70,46;Bubblegum,335,210,160,75,60;Rose,345,200,130,65,52;Cherry,355,40,120,75,40;Maroon,0,25,100,60,26;Brick,10,205,100,55,40;Terracotta,15,200,90,50,48;Rust,22,210,80,60,40;Copper,28,215,70,55,45;Caramel,33,30,80,55,50;Sand,40,45,95,35,58;Olive,70,50,90,40,38;Moss,95,40,115,35,32;Forest,130,60,150,45,28;Pine,155,200,170,55,26;Slate,200,220,190,15,36;Steel,210,40,160,20,45;Charcoal,10,220,150,8,24;Ash,30,40,100,10,52;Cocoa,20,30,60,35,30;Coffee,25,35,50,40,36;Peach,15,200,120,75,68;Coral,10,215,130,80,58;Salmon,5,35,150,75,62;Apricot,30,215,100,80,60;Wine,340,25,100,55,28;Plum,310,280,130,40,34;Lavender,255,320,150,55,62;Berry,330,300,120,55,40;Neon Night,300,250,170,100,50;Electric,200,300,170,100,48;Holi,330,60,120,90,55;Diwali,38,260,10,95,50".split(";").map(function(s){var a=s.split(",");return{n:a[0],h:+a[1],k:+a[2],f:+a[3],s:+a[4],l:+a[5]}});
+function hs(h,s,l,a){return "hsl("+h+" "+Math.max(0,Math.min(100,s))+"% "+Math.max(0,Math.min(100,l))+"%"+(a!=null?" / "+a:"")+")"}
+function cols(t){return{main:hs(t.h,t.s,t.l),wall:hs(t.h,t.s-10,t.l+14),dark:hs(t.h,40,10),awn:hs(t.h,t.s,t.l-22),awn2:hs(t.h,t.s,t.l+4),sky:hs(t.k,50,45),leaf:hs(t.f,40,26),leaf2:hs(t.f,38,32),shade:hs(t.h,70,12),pl1:hs(t.h,35,35,.55),pl2:hs(t.h,40,20,.8),tlbg:hs(t.h,40,16,.95)}}
+function setT(k){var c=cols(TH[k]),r=document.documentElement.style;for(var x in c)r.setProperty("--"+x,c[x])}
+setT(Math.floor(Math.random()*TH.length));
+
+// genre picker
+function mood(m){
+  var P=[];
+  tracks.forEach(function(t,x){if(t.m==m)P.push(x)});
+  if(!P.length)P=tracks.map(function(_,x){return x});
+  pool=P;i=P[Math.floor(Math.random()*P.length)];pos=0;bad=false;
+  au.src=encodeURI(tracks[i].src);
+  $("md").hidden=true;
+  play(true);
+}
+document.querySelectorAll("#md [data-m]").forEach(function(b){b.onclick=function(){mood(this.getAttribute("data-m"))}});
+$("mdb").onclick=function(){$("md").hidden=false};
+$("mskip").onclick=function(){$("md").hidden=true};
+
+// loading screen: stays at least 0.7s, gives up waiting after 3s
+var t0=Date.now(),ldDone=false;
+function ready(){
+  if(ldDone)return;
+  var w=700-(Date.now()-t0);
+  if(w>0){setTimeout(ready,w);return}
+  ldDone=true;$("ld").classList.add("out");setTimeout(function(){if($("ld"))$("ld").remove()},600);
+}
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){if(document.readyState=="complete")ready();else window.addEventListener("load",ready)});
+setTimeout(ready,3000);
+
+// player controls
+$("pp").onclick=function(){play(!on)};
+$("nx").onclick=function(){go(1)};
+$("prev").onclick=function(){go(-1)};
+$("bar").onclick=function(e){
+  e.stopPropagation();
+  var r=this.getBoundingClientRect(),dur=tracks[i].d||1;
+  pos=Math.floor((e.clientX-r.left)/r.width*dur);
+  if(au.readyState>0)au.currentTime=pos;
+  draw();
+};
+
+// keyboard shortcuts
+document.addEventListener("keydown",function(e){
+  if(e.target.tagName==="BUTTON"||e.target.id==="meta")return;
+  if(e.code==="Space"){e.preventDefault();play(!on)}
+  else if(e.code==="ArrowRight")go(1);
+  else if(e.code==="ArrowLeft")go(-1);
+});
+
+// about dialog
+$("abl").onclick=function(){$("about").hidden=false};
+$("abx").onclick=function(){$("about").hidden=true};
+$("about").onclick=function(e){if(e.target===this)this.hidden=true};
+
+draw();
+</script>
+</body>
+</html>
