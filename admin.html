@@ -1,1 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Mahfil Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#faf5ef;--tx:#2a1410;--mut:#7d6a62;--card:#fff;--line:#eadfd6;--red:#d92b25;--deep:#2a1020;--hov:#f6ede4;box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#170b0f;--tx:#f7e8de;--mut:#b49d92;--card:#241218;--line:#3d222b;--hov:#2e1820}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);line-height:1.5}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 40px}
+.logo{font-family:'Rozha One',serif;font-weight:400;color:#fff;line-height:1.1;text-shadow:0 2px 0 rgba(90,10,8,.5)}
+h2{font-size:1.05rem;margin:0 0 4px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 2px rgba(42,16,32,.05)}
+.sub{color:var(--mut);font-size:.88rem;margin:0 0 14px}
+label{display:grid;gap:5px;font-weight:600;font-size:.85rem;margin-bottom:12px}
+input,select,textarea,button{font:inherit}
+input[type=text],input[type=password],select,textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--tx)}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--red)}
+textarea{min-height:55vh;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;line-height:1.5;white-space:pre;tab-size:2}
+button{border:0;border-radius:10px;padding:10px 16px;font-weight:600;cursor:pointer;background:var(--red);color:#fff;transition:filter .15s}
+button:hover{filter:brightness(1.08)}
+button.alt{background:transparent;color:var(--tx);border:1px solid var(--line)}
+button.alt:hover{background:var(--hov);filter:none}
+button.bad{background:transparent;color:#d92b25;border:1px solid var(--line)}
+button.bad:hover{background:#d92b25;color:#fff;filter:none}
+button.sm{padding:6px 12px;font-size:.85rem}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid #f5b63c;outline-offset:2px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar.sp{justify-content:space-between}
+.chk{display:flex;gap:9px;align-items:center;font-weight:400;font-size:.9rem}
+#login{min-height:100vh;display:grid;place-items:center;padding:24px 0}
+.lbox{width:100%;max-width:400px}
+.lhead{background:var(--deep);border-radius:16px 16px 0 0;padding:26px 18px;text-align:center}
+.lhead .logo{font-size:3.2rem;display:block}
+.lhead span:last-child{color:#e9c9d8;font-size:.8rem;letter-spacing:.18em;text-transform:uppercase}
+.lbox .card{border-radius:0 0 16px 16px;margin:0}
+details{margin-top:14px;font-size:.85rem;color:var(--mut)}summary{cursor:pointer;font-weight:600}
+.top{background:var(--deep);margin:0 -16px 14px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px}
+.top .in{max-width:860px;margin:0 auto;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.top .logo{font-size:1.7rem}
+.top small{display:block;color:#e9c9d8;font-size:.75rem;word-break:break-all}
+.top button{background:rgba(255,255,255,.12);border:0;color:#fff;padding:7px 12px;font-size:.85rem}
+.tabs{display:flex;gap:4px;background:var(--hov);border:1px solid var(--line);padding:4px;border-radius:12px;margin-bottom:14px}
+.tabs button{flex:1;background:transparent;color:var(--mut);padding:9px 6px}
+.tabs button.on{background:var(--card);color:var(--tx);box-shadow:0 1px 3px rgba(42,16,32,.15)}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 6px;border-bottom:1px solid var(--line);border-radius:8px}
+.row:hover{background:var(--hov)}.row:last-child{border-bottom:0}
+.row .p{min-width:0;word-break:break-all;font-size:.92rem}.row small{color:var(--mut);display:block}
+.row .bar{flex:none}
+#q{margin:10px 0 6px}
+.chip{border:1px solid var(--line);background:transparent;color:var(--tx);border-radius:20px;padding:6px 13px;font-size:.85rem;text-transform:capitalize}
+.chip.on{background:var(--deep);color:#fff;border-color:var(--deep)}
+.song{border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.song.hid{opacity:.55;border-style:dashed}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+@media (max-width:520px){.g2{grid-template-columns:1fr}.row{align-items:flex-start;flex-direction:column}}
+.note{font-size:.82rem;color:var(--mut)}
+.err{color:#d92b25;font-weight:600;min-height:1.3em;margin:10px 0 0;font-size:.9rem}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);transform:translateX(-50%);background:#222;color:#fff;padding:10px 18px;border-radius:24px;max-width:90%;z-index:50;display:none;font-size:.9rem;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+#toast.bad{background:#8b1a14}
+iframe{width:100%;height:60vh;border:1px solid var(--line);border-radius:10px;background:#fff}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
 
+<!-- LOGIN -->
+<section id="login">
+  <div class="lbox">
+    <div class="lhead"><span class="logo">महफ़िल</span><span>Admin</span></div>
+    <div class="card">
+      <p class="sub">Enter your GitHub key to continue.</p>
+      <label>GitHub token <input type="password" id="tok" autocomplete="off" placeholder="github_pat_..."></label>
+      <label>Repository <input type="text" id="repo" placeholder="yourname/mahfil" autocapitalize="off"></label>
+      <label>Branch <input type="text" id="br" placeholder="default branch" autocapitalize="off"></label>
+      <label class="chk"><input type="checkbox" id="rem"> Remember token on this device</label>
+      <button id="vb" style="width:100%">Verify and open admin</button>
+      <p class="err" id="lerr" role="alert"></p>
+      <details><summary>How do I get a token?</summary>
+        <p>GitHub → Settings → Developer settings → Fine-grained tokens. Select only this repository and give it <b>Contents: Read and write</b>.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- PANEL -->
+<section id="panel" hidden>
+  <div class="top"><div class="in">
+    <div><span class="logo">महफ़िल</span><small id="who"></small></div>
+    <div class="bar"><button id="rl">Reload</button><button id="lo">Lock</button></div>
+  </div></div>
+  <div class="tabs" id="tabs">
+    <button data-t="files" class="on">Files</button><button data-t="edit">Editor</button><button data-t="up">Upload</button><button data-t="songs">Songs</button>
+  </div>
+
+  <div id="t-files" class="card">
+    <div class="bar sp"><div><h2>Files</h2><p class="sub" style="margin:0">Edit or delete anything on the site.</p></div><button id="nf" class="sm">+ New file</button></div>
+    <input type="text" id="q" placeholder="Search files...">
+    <div id="fl"></div>
+    <p class="note" id="tn"></p>
+  </div>
+
+  <div id="t-edit" class="card" hidden>
+    <h2 id="ep">No file open</h2><p class="sub" id="eh">Open a file from the Files tab.</p>
+    <textarea id="ed" spellcheck="false" hidden></textarea>
+    <iframe id="pv" hidden title="Preview" sandbox="allow-scripts"></iframe>
+    <label style="margin-top:10px" id="cml" hidden>Commit message <input type="text" id="cm"></label>
+    <div class="bar" id="eb" hidden><button id="sv">Save to site</button><button class="alt" id="pb">Preview</button><button class="alt" id="cl">Close</button></div>
+  </div>
+
+  <div id="t-up" class="card" hidden>
+    <h2>Upload</h2><p class="sub">Add songs, photos or any file to the site.</p>
+    <label>Choose files <input type="file" id="uf" multiple></label>
+    <label>Folder <input type="text" id="ud" placeholder="Auto: music/ for audio, img/ for images" autocapitalize="off"></label>
+    <div id="up" class="note"></div>
+    <div class="bar"><button id="ub">Upload</button></div>
+    <p class="note">Same-name files are replaced. Keep each under about 25 MB.</p>
+  </div>
+
+  <div id="t-songs" class="card" hidden>
+    <h2>Songs</h2>
+    <p class="sub">Filter by genre, edit, hide or remove songs.</p>
+    <div class="bar" id="chips" style="margin-bottom:10px"></div>
+    <div class="bar" style="margin-bottom:12px"><button class="alt sm" id="hg">Hide all in genre</button><button class="alt sm" id="sg">Show all in genre</button></div>
+    <div id="sl"></div>
+    <div class="song">
+      <b>Add song</b>
+      <div class="g2" style="margin-top:8px"><select id="am"></select><select id="ag"></select></div>
+      <div class="bar" style="margin-top:8px"><button class="alt" id="ab">Add to list</button></div>
+      <p class="note">Upload the mp3 first (Upload tab); it then appears here.</p>
+    </div>
+    <label class="chk"><input type="checkbox" id="dm"> When removing a song, also delete its mp3 file</label>
+    <div class="bar"><button id="ss">Save songs to site</button><span class="note" id="sd"></span></div>
+  </div>
+</section>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+// Optional: only these GitHub usernames may enter (lowercase). Leave empty to allow any user whose token can write to the repo.
+var ADMINS=[];
+var GENRES=["punjabi","haryanvi","bollywood","lofi","bhojpuri","mix"];
+var TEXT=/\.(html?|css|js|json|txt|md|svg|xml|webmanifest)$/i;
+var $=function(x){return document.getElementById(x)};
+var S={tok:"",owner:"",repo:"",br:"",user:"",tree:[],cur:null,tr:null,gf:"all",rm:[],dirty:false};
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var tt;function toast(m,bad){var t=$("toast");t.textContent=m;t.className=bad?"bad":"";t.style.display="block";clearTimeout(tt);tt=setTimeout(function(){t.style.display="none"},3500)}
+function run(fn){return Promise.resolve().then(fn).catch(function(e){toast(e.message||String(e),true)})}
+function ep(p){return p.split("/").map(encodeURIComponent).join("/")}
+function u8(b){var s=atob(b.replace(/\s/g,"")),u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u}
+function b64(u){var s="",c=32768;for(var i=0;i<u.length;i+=c)s+=String.fromCharCode.apply(null,u.subarray(i,i+c));return btoa(s)}
+function kb(n){return n>1048576?(n/1048576).toFixed(1)+" MB":Math.max(1,Math.round(n/1024))+" KB"}
+
+async function gh(method,path,body){
+  var r=await fetch("https://api.github.com"+path,{method:method,headers:{Authorization:"Bearer "+S.tok,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},body:body?JSON.stringify(body):undefined});
+  var j=null;try{j=await r.json()}catch(e){}
+  if(!r.ok)throw new Error((j&&j.message)||("GitHub error "+r.status));
+  return j;
+}
+function base(){return "/repos/"+S.owner+"/"+S.repo}
+function store(){try{return $("rem").checked?localStorage:sessionStorage}catch(e){return null}}
+
+/* ---------- verify key ---------- */
+async function verify(){
+  $("lerr").textContent="";
+  var tok=$("tok").value.trim(),rp=$("repo").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,"").replace(/\/+$/,"").split("/");
+  if(!tok||rp.length<2||!rp[0]||!rp[1]){$("lerr").textContent="Enter the token and the repo as owner/name.";return}
+  S.tok=tok;S.owner=rp[0];S.repo=rp[1];
+  $("vb").disabled=true;$("vb").textContent="Verifying...";
+  try{
+    var u=await gh("GET","/user");
+    if(ADMINS.length&&ADMINS.indexOf(u.login.toLowerCase())<0)throw new Error("This GitHub user is not on the admin list.");
+    var r=await gh("GET",base());
+    if(!(r.permissions&&(r.permissions.push||r.permissions.admin)))throw new Error("This key has no write access to the repository.");
+    S.user=u.login;S.br=$("br").value.trim()||r.default_branch;
+    try{var st=store();if(st){st.setItem("mh_tok",tok);st.setItem("mh_repo",S.owner+"/"+S.repo);st.setItem("mh_br",$("br").value.trim());if(!$("rem").checked){localStorage.removeItem("mh_tok")}}}catch(e){}
+    $("who").textContent=u.login+" · "+S.owner+"/"+S.repo+" · "+S.br;
+    $("login").hidden=true;$("panel").hidden=false;$("tok").value="";
+    await loadTree();
+  }catch(e){S.tok="";$("lerr").textContent="Not verified: "+e.message}
+  $("vb").disabled=false;$("vb").textContent="Verify and open admin";
+}
+function lock(){S.tok="";S.tree=[];S.cur=null;S.tr=null;try{sessionStorage.removeItem("mh_tok");localStorage.removeItem("mh_tok")}catch(e){}$("panel").hidden=true;$("login").hidden=false;$("ed").value=""}
+
+/* ---------- tabs ---------- */
+function tab(t){["files","edit","up","songs"].forEach(function(k){$("t-"+k).hidden=k!==t});[].forEach.call($("tabs").children,function(b){b.className=b.getAttribute("data-t")===t?"on":""});if(t==="songs"&&!S.tr)run(loadSongs)}
+
+/* ---------- files ---------- */
+async function loadTree(){
+  var t=await gh("GET",base()+"/git/trees/"+encodeURIComponent(S.br)+"?recursive=1");
+  S.tree=t.tree.filter(function(x){return x.type==="blob"}).sort(function(a,b){return a.path<b.path?-1:1});
+  $("tn").textContent=t.truncated?"The repo is large, so this list is incomplete.":"";
+  renderFiles();fillMp3();
+}
+function renderFiles(){
+  var q=$("q").value.trim().toLowerCase(),h="";
+  S.tree.forEach(function(f,i){if(q&&f.path.toLowerCase().indexOf(q)<0)return;
+    h+='<div class="row"><div class="p">'+esc(f.path)+'<small>'+kb(f.size||0)+'</small></div><div class="bar">'+(TEXT.test(f.path)?'<button class="alt sm" data-e="'+i+'">Edit</button>':'')+'<button class="bad sm" data-d="'+i+'">Delete</button></div></div>'});
+  $("fl").innerHTML=h||'<p class="note">No files.</p>';
+}
+async function delFile(path,sha){
+  await gh("DELETE",base()+"/contents/"+ep(path),{message:"Delete "+path+" via admin",sha:sha,branch:S.br});
+}
+
+/* ---------- editor ---------- */
+async function openFile(path){
+  var f=S.tree.filter(function(x){return x.path===path})[0],txt="";
+  if(f){var j=await gh("GET",base()+"/git/blobs/"+f.sha);txt=new TextDecoder().decode(u8(j.content))}
+  S.cur={path:path,isNew:!f};
+  $("ep").textContent=path+(f?"":" (new file)");$("eh").hidden=true;$("ed").value=txt;$("ed").hidden=false;$("pv").hidden=true;$("eb").hidden=false;$("cml").hidden=false;
+  $("cm").value=(f?"Update ":"Add ")+path+" via admin";
+  tab("edit");
+}
+async function saveFile(){
+  if(!S.cur)return;var p=S.cur.path,sha;
+  try{var m=await gh("GET",base()+"/contents/"+ep(p)+"?ref="+encodeURIComponent(S.br));sha=m.sha}catch(e){sha=undefined}
+  var body={message:$("cm").value||("Update "+p),content:b64(new TextEncoder().encode($("ed").value)),branch:S.br};if(sha)body.sha=sha;
+  await gh("PUT",base()+"/contents/"+ep(p),body);
+  toast("Saved. The site updates in about a minute.");await loadTree();S.cur.isNew=false;$("ep").textContent=p;
+}
+function previewFile(){
+  var f=$("pv");if(!f.hidden){f.hidden=true;$("ed").hidden=false;$("pb").textContent="Preview";return}
+  f.srcdoc=$("ed").value;f.hidden=false;$("ed").hidden=true;$("pb").textContent="Back to code";
+}
+
+/* ---------- upload ---------- */
+function targetPath(file){
+  var d=$("ud").value.trim().replace(/^\/+|\/+$/g,""),n=file.name.replace(/[^\w.\-() ]+/g,"-").trim();
+  if(!d){if(/^audio\//.test(file.type)||/\.(mp3|m4a|wav|ogg)$/i.test(n))d="music";else if(/^image\//.test(file.type)||/\.(jpe?g|png|gif|webp|svg)$/i.test(n))d="img"}
+  return d?d+"/"+n:n;
+}
+function showPlan(){var fs=$("uf").files,h="";for(var i=0;i<fs.length;i++)h+="<div>"+esc(targetPath(fs[i]))+" · "+kb(fs[i].size)+"</div>";$("up").innerHTML=h}
+async function upload(){
+  var fs=$("uf").files;if(!fs.length){toast("Choose files first.",true);return}
+  $("ub").disabled=true;
+  try{
+    for(var i=0;i<fs.length;i++){
+      var f=fs[i],p=targetPath(f);
+      if(f.size>50*1048576)throw new Error(f.name+" is too large (max 50 MB).");
+      $("up").innerHTML="Uploading "+(i+1)+" of "+fs.length+": "+esc(p)+"...";
+      var old=S.tree.filter(function(x){return x.path===p})[0],body={message:(old?"Replace ":"Add ")+p+" via admin",content:b64(new Uint8Array(await f.arrayBuffer())),branch:S.br};
+      if(old)body.sha=old.sha;
+      await gh("PUT",base()+"/contents/"+ep(p),body);
+    }
+    toast("Upload done.");$("uf").value="";$("up").textContent="";await loadTree();
+  }catch(e){toast(e.message,true)}
+  $("ub").disabled=false;
+}
+
+/* ---------- songs (moderation by genre) ---------- */
+function g(o,k){var r=o.match(new RegExp('[{,]'+k+':("(?:[^"\\\\]|\\\\.)*")'));return r?JSON.parse(r[1]):""}
+function parseTracks(html){
+  var m=html.match(/var tracks=\[([\s\S]*?)\];/);if(!m)return null;
+  return(m[1].match(/\{[^{}]*\}/g)||[]).map(function(o){var d=o.match(/[{,]d:([\d.]+)/);return{n:g(o,"n"),a:g(o,"a"),d:d?+d[1]:200,src:g(o,"src"),c:g(o,"c"),m:g(o,"m"),h:/[{,]h:1/.test(o)}});
+}
+function ser(t){return "{n:"+j(t.n)+",a:"+j(t.a)+",d:"+Math.round(t.d||200)+",src:"+j(t.src)+(t.c?",c:"+j(t.c):"")+",m:"+j(t.m)+(t.h?",h:1":"")+"}"}
+function j(s){return JSON.stringify(String(s)).replace(/</g,"\\u003c")}
+async function loadSongs(){
+  var f=S.tree.filter(function(x){return x.path==="songs.js"})[0];if(!f)throw new Error("songs.js not found. Upload the latest songs.js and index.html first.");
+  var b=await gh("GET",base()+"/git/blobs/"+f.sha),html=new TextDecoder().decode(u8(b.content)),t=parseTracks(html);
+  if(!t)throw new Error("Could not find the tracks list in songs.js.");
+  S.tr=t;S.rm=[];S.dirty=false;S.gf="all";renderSongs();
+}
+function fillMp3(){
+  var used=(S.tr||[]).map(function(t){return t.src}),h="";
+  S.tree.forEach(function(f){if(/^music\/.+\.(mp3|m4a|wav|ogg)$/i.test(f.path)&&used.indexOf(f.path)<0)h+='<option>'+esc(f.path)+'</option>'});
+  $("am").innerHTML=h||'<option value="">No unused audio files</option>';
+  $("ag").innerHTML=GENRES.map(function(x){return"<option>"+x+"</option>"}).join("");
+}
+function renderSongs(){
+  var tr=S.tr,c="",h="",cnt={all:tr.length};
+  tr.forEach(function(t){cnt[t.m]=(cnt[t.m]||0)+1});
+  ["all"].concat(GENRES).forEach(function(k){if(k!=="all"&&!cnt[k]&&S.gf!==k)return;c+='<button class="chip'+(S.gf===k?' on':'')+'" data-g="'+k+'">'+k+' ('+(cnt[k]||0)+')</button>'});
+  $("chips").innerHTML=c;
+  tr.forEach(function(t,i){if(S.gf!=="all"&&t.m!==S.gf)return;
+    h+='<div class="song'+(t.h?' hid':'')+'"><div class="g2"><label>Title<input type="text" data-i="'+i+'" data-k="n" value="'+esc(t.n)+'"></label><label>Artist<input type="text" data-i="'+i+'" data-k="a" value="'+esc(t.a)+'"></label>'
+    +'<label>Genre<select data-i="'+i+'" data-k="m">'+GENRES.map(function(x){return'<option'+(x===t.m?' selected':'')+'>'+x+'</option>'}).join("")+(GENRES.indexOf(t.m)<0?'<option selected>'+esc(t.m)+'</option>':'')+'</select></label>'
+    +'<label>File<input type="text" data-i="'+i+'" data-k="src" value="'+esc(t.src)+'"></label><label>Cover image<input type="text" data-i="'+i+'" data-k="c" value="'+esc(t.c||"")+'" placeholder="img/cover.jpg"></label></div>'
+    +'<div class="bar sp"><label class="chk" style="margin:0"><input type="checkbox" data-i="'+i+'" data-k="h"'+(t.h?' checked':'')+'> Hidden from site</label><button class="bad sm" data-r="'+i+'">Remove</button></div></div>'});
+  $("sl").innerHTML=h||'<p class="note">No songs in this genre.</p>';
+  $("sd").textContent=S.dirty?"Unsaved changes":"";fillMp3();
+}
+async function saveSongs(){
+  if(!S.tr.length||S.tr.every(function(t){return t.h}))throw new Error("Keep at least one song visible.");
+  var f=S.tree.filter(function(x){return x.path==="songs.js"})[0];
+  var b=await gh("GET",base()+"/git/blobs/"+f.sha),html=new TextDecoder().decode(u8(b.content));
+  html=html.replace(/var tracks=\[[\s\S]*?\];/,function(){return"var tracks=["+S.tr.map(ser).join(",")+"];"});
+  var m=await gh("GET",base()+"/contents/songs.js?ref="+encodeURIComponent(S.br));
+  await gh("PUT",base()+"/contents/songs.js",{message:"Update songs via admin",content:b64(new TextEncoder().encode(html)),sha:m.sha,branch:S.br});
+  for(var i=0;i<S.rm.length;i++){var x=S.tree.filter(function(y){return y.path===S.rm[i]})[0];if(x)await delFile(x.path,x.sha)}
+  S.rm=[];S.dirty=false;toast("Songs saved. The site updates in about a minute.");await loadTree();S.tr=null;await loadSongs();
+}
+
+/* ---------- wiring ---------- */
+$("vb").onclick=verify;
+$("tok").onkeydown=$("repo").onkeydown=function(e){if(e.key==="Enter")verify()};
+$("lo").onclick=lock;
+$("rl").onclick=function(){run(async function(){await loadTree();S.tr=null;if(!$("t-songs").hidden)await loadSongs();toast("Reloaded.")})};
+$("tabs").onclick=function(e){var t=e.target.getAttribute("data-t");if(t)tab(t)};
+$("q").oninput=renderFiles;
+$("nf").onclick=function(){var p=prompt("New file path (for example about2.html):");if(p){p=p.trim().replace(/^\/+/,"");if(p)run(function(){return openFile(p)})}};
+$("fl").onclick=function(e){
+  var b=e.target.closest("button");if(!b)return;
+  var ei=b.getAttribute("data-e"),di=b.getAttribute("data-d");
+  if(ei!==null)run(function(){return openFile(S.tree[+ei].path)});
+  if(di!==null){var f=S.tree[+di];if(confirm("Delete "+f.path+" permanently from the site?"))run(async function(){await delFile(f.path,f.sha);toast("Deleted "+f.path);await loadTree()})}
+};
+$("sv").onclick=function(){run(saveFile)};
+$("pb").onclick=previewFile;
+$("cl").onclick=function(){S.cur=null;$("ed").value="";$("ed").hidden=true;$("pv").hidden=true;$("eb").hidden=true;$("cml").hidden=true;$("ep").textContent="No file open";$("eh").hidden=false};
+$("uf").onchange=showPlan;$("ud").oninput=showPlan;
+$("ub").onclick=function(){run(upload)};
+$("chips").onclick=function(e){var k=e.target.getAttribute("data-g");if(k){S.gf=k;renderSongs()}};
+function bulk(v){S.tr.forEach(function(t){if(S.gf==="all"||t.m===S.gf)t.h=v});S.dirty=true;renderSongs()}
+$("hg").onclick=function(){bulk(true)};$("sg").onclick=function(){bulk(false)};
+$("sl").oninput=function(e){var el=e.target,i=el.getAttribute("data-i");if(i===null||el.tagName==="SELECT")return;S.tr[+i][el.getAttribute("data-k")]=el.type==="checkbox"?el.checked:el.value;S.dirty=true;$("sd").textContent="Unsaved changes"};
+$("sl").onchange=function(e){var el=e.target,i=el.getAttribute("data-i");if(i===null)return;S.tr[+i][el.getAttribute("data-k")]=el.type==="checkbox"?el.checked:el.value;S.dirty=true;renderSongs()};
+$("sl").onclick=function(e){var b=e.target.closest("button[data-r]");if(!b)return;var i=+b.getAttribute("data-r"),t=S.tr[i];if(!confirm('Remove "'+t.n+'" from the site list?'))return;if($("dm").checked&&t.src)S.rm.push(t.src);S.tr.splice(i,1);S.dirty=true;renderSongs()};
+$("ab").onclick=function(){var p=$("am").value;if(!p){toast("No unused audio file to add.",true);return}var n=p.split("/").pop().replace(/\.[^.]+$/,"").replace(/[-_]+/g," ");S.tr.push({n:n,a:"Artist",d:200,src:p,c:"",m:$("ag").value,h:false});S.dirty=true;renderSongs()};
+$("ss").onclick=function(){run(saveSongs)};
+window.onbeforeunload=function(){return S.dirty?"Unsaved changes":undefined};
+
+// prefill saved details (token is only prefilled if it was saved on this device)
+try{var st=sessionStorage.getItem("mh_tok")?sessionStorage:localStorage;
+  if(st.getItem("mh_repo"))$("repo").value=st.getItem("mh_repo");
+  if(st.getItem("mh_br"))$("br").value=st.getItem("mh_br");
+  if(st.getItem("mh_tok")){$("tok").value=st.getItem("mh_tok");$("rem").checked=st===localStorage}
+}catch(e){}
+</script>
+</body>
+</html>
