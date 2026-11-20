@@ -74,22 +74,17 @@ h1{position:relative;color:#fff;font-size:clamp(3rem,13vw,8rem);line-height:1.05
 .abc p{margin:0 0 12px;opacity:.92}
 #abx{position:absolute;top:10px;right:12px;background:none;border:0;color:#fff;font-size:1.2rem;cursor:pointer;padding:6px}
 
-/* loader + genre picker */
-#ld,#md{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:#fff;transition:opacity .5s}
-#ld{z-index:100;background:linear-gradient(var(--main),var(--awn) 60%,var(--dark))}
-#ld.out{opacity:0;pointer-events:none}
-#md{z-index:90;background:var(--pl2);backdrop-filter:blur(6px)}
-.ldlogo{font-family:'Rozha One',serif;font-weight:400;font-size:clamp(3rem,16vw,6.5rem);line-height:1.1;color:#fff;text-shadow:0 4px 0 rgba(90,10,8,.5);animation:pls 1.4s ease-in-out infinite}
-@keyframes pls{50%{opacity:.55;transform:scale(.97)}}
-@media (prefers-reduced-motion:reduce){.ldlogo{animation:none}}
+/* genre picker */
+#md{position:fixed;inset:0;display:grid;place-items:center;text-align:center;color:#fff;transition:opacity .5s;z-index:90;background:var(--pl2);backdrop-filter:blur(6px)}
 .mdc{padding:20px;max-width:460px;width:100%}
 .mdc h2{color:#fff}
 .mdc p{margin:0;opacity:.85}
 .mg{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:22px 0 14px}
-.mg button{position:relative;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;overflow:hidden;font:inherit;font-size:1.05rem;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 8px;cursor:pointer;text-shadow:0 1px 6px rgba(0,0,0,.6);transition:transform .15s}
+.mg button{position:relative;min-height:105px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;overflow:hidden;font:inherit;font-size:1.05rem;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 8px;cursor:pointer;text-shadow:0 1px 6px rgba(0,0,0,.6);transition:transform .15s}
 .mg button:hover{transform:translateY(-2px)}
 .mg button:active{background:rgba(255,255,255,.3);transform:scale(.97)}
 .mg button span{display:block;font-size:1.8rem}
+.mg [data-m=all]{grid-column:1 / -1;min-height:84px;background:linear-gradient(rgba(0,0,0,0) 25%,rgba(0,0,0,.65)),linear-gradient(135deg,#f5b63c,var(--main),var(--sky))}
 .mg [data-m=punjabi]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--main),var(--awn))}
 .mg [data-m=haryanvi]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--leaf2),var(--dark))}
 .mg [data-m=bollywood]{background:linear-gradient(rgba(0,0,0,0) 35%,rgba(0,0,0,.6)),linear-gradient(135deg,var(--sky),var(--awn))}
@@ -112,13 +107,12 @@ h1{position:relative;color:#fff;font-size:clamp(3rem,13vw,8rem);line-height:1.05
 </style>
 </head>
 <body>
-<div id="ld" role="status" aria-label="Loading"><div class="ldlogo">महफ़िल</div></div>
 <div id="md" hidden role="dialog" aria-modal="true" aria-labelledby="mdt">
   <div class="mdc">
     <h2 id="mdt">What do you want to listen to?</h2>
     <p>Pick a genre and a song from it will play.</p>
     <div class="mg">
-      <button data-m="All"><span>ALL</span>ALL</button>
+      <button data-m="all"><span>🎶</span>All</button>
       <button data-m="punjabi"><span>🥁</span>Punjabi</button>
       <button data-m="haryanvi"><span>🌾</span>Haryanvi</button>
       <button data-m="bollywood"><span>🎬</span>Bollywood</button>
@@ -186,10 +180,8 @@ h1{position:relative;color:#fff;font-size:clamp(3rem,13vw,8rem);line-height:1.05
   </div>
 </header>
 
-<!-- Optional external songs.js; if missing, built-in fallback tracks below will automatically load -->
 <script src="songs.js"></script>
 <script>
-// Fallback playlist so the project runs standalone even without songs.js
 if (typeof tracks === "undefined" || !Array.isArray(tracks) || !tracks.length) {
   window.tracks = [
     { n: "Shaam-e-Mehfil", a: "Salon Sessions • Lo-fi", m: "lofi", d: 138, src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
@@ -214,9 +206,8 @@ if (typeof LY === "undefined" || !Array.isArray(LY)) {
 var $=function(x){return document.getElementById(x)};
 var PL='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
     PA='<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg>';
-var i=0,pos=0,on=false,bad=false,ec=0,tm,pool=null;
+var i=0,pos=0,on=false,bad=false,ec=0,tm,pool=null,randMode=false;
 
-// drop songs marked h:1 (hidden) together with their lyrics
 var _h=tracks.map(function(t){return !!t.h});
 LY=LY.filter(function(_,k){return !_h[k]});
 tracks=tracks.filter(function(t){return !t.h});
@@ -287,17 +278,28 @@ function play(v){
 au.addEventListener("error",function(){var e=au.error;if(!e||e.code===1)return;ec=e.code;bad=true;on=false;clearInterval(tm);draw()});
 au.addEventListener("loadedmetadata",function(){if(isFinite(au.duration))tracks[i].d=au.duration;if(bad)bad=false;draw()});
 
+function pickRandomIndex(P,currentIdx){
+  if(P.length<=1)return P[0];
+  var choices=P.filter(function(x){return x!==currentIdx});
+  return choices[Math.floor(Math.random()*choices.length)];
+}
+
 function go(k){
   if(!tracks.length)return;
-  var P=pool||tracks.map(function(_,x){return x}),p=P.indexOf(i);
-  if(p<0)p=0;
-  i=P[(p+k+P.length)%P.length];pos=0;bad=false;
+  var P=pool||tracks.map(function(_,x){return x});
+  if(randMode){
+    i=pickRandomIndex(P,i);
+  }else{
+    var p=P.indexOf(i);
+    if(p<0)p=0;
+    i=P[(p+k+P.length)%P.length];
+  }
+  pos=0;bad=false;
   au.src=encodeURI(tracks[i].src);
   if(on)pl();
   draw();
 }
 
-// song list popup
 function list(){
   var e=$("tl");e.innerHTML="";
   tracks.forEach(function(t,k){
@@ -314,23 +316,27 @@ $("meta").onclick=tog;
 $("meta").onkeydown=function(e){if(e.key=="Enter"||e.key==" "){e.preventDefault();tog()}};
 document.addEventListener("click",function(e){if(!e.target.closest("#tl,#meta"))$("tl").hidden=true});
 
-// clock
 function clk(){var d=new Date(),h=d.getHours(),m=d.getMinutes();$("clk").textContent=(h%12||12)+":"+("0"+m).slice(-2)+(h<12?" am":" pm")}
 clk();setInterval(clk,1000);
 
-// random colour theme on every page load
 var TH="Classic Red,3,215,110,70,48;Sunset,18,260,25,85,52;Marigold,40,200,100,90,50;Lemon Soda,52,190,90,80,52;Lime Chaat,85,200,130,65,42;Banana Leaf,120,205,140,45,36;Jade,150,190,170,55,36;Mint,165,35,150,50,45;Teal Chai,180,30,200,60,34;Lagoon,190,20,170,70,40;Ocean,205,35,180,70,42;Sky Blue,215,40,150,65,50;Indigo Night,230,260,200,55,38;Ink Blue,225,235,210,60,28;Violet,265,300,150,50,45;Grape,285,330,140,45,36;Orchid,300,20,130,45,50;Magenta,320,200,150,70,46;Bubblegum,335,210,160,75,60;Rose,345,200,130,65,52;Cherry,355,40,120,75,40;Maroon,0,25,100,60,26;Brick,10,205,100,55,40;Terracotta,15,200,90,50,48;Rust,22,210,80,60,40;Copper,28,215,70,55,45;Caramel,33,30,80,55,50;Sand,40,45,95,35,58;Olive,70,50,90,40,38;Moss,95,40,115,35,32;Forest,130,60,150,45,28;Pine,155,200,170,55,26;Slate,200,220,190,15,36;Steel,210,40,160,20,45;Charcoal,10,220,150,8,24;Ash,30,40,100,10,52;Cocoa,20,30,60,35,30;Coffee,25,35,50,40,36;Peach,15,200,120,75,68;Coral,10,215,130,80,58;Salmon,5,35,150,75,62;Apricot,30,215,100,80,60;Wine,340,25,100,55,28;Plum,310,280,130,40,34;Lavender,255,320,150,55,62;Berry,330,300,120,55,40;Neon Night,300,250,170,100,50;Electric,200,300,170,100,48;Holi,330,60,120,90,55;Diwali,38,260,10,95,50".split(";").map(function(s){var a=s.split(",");return{n:a[0],h:+a[1],k:+a[2],f:+a[3],s:+a[4],l:+a[5]}});
 function hs(h,s,l,a){return "hsl("+h+" "+Math.max(0,Math.min(100,s))+"% "+Math.max(0,Math.min(100,l))+"%"+(a!=null?" / "+a:"")+")"}
 function cols(t){return{main:hs(t.h,t.s,t.l),wall:hs(t.h,t.s-10,t.l+14),dark:hs(t.h,40,10),awn:hs(t.h,t.s,t.l-22),awn2:hs(t.h,t.s,t.l+4),sky:hs(t.k,50,45),leaf:hs(t.f,40,26),leaf2:hs(t.f,38,32),shade:hs(t.h,70,12),pl1:hs(t.h,35,35,.55),pl2:hs(t.h,40,20,.8),tlbg:hs(t.h,40,16,.95)}}
 function setT(k){var c=cols(TH[k]),r=document.documentElement.style;for(var x in c)r.setProperty("--"+x,c[x])}
 setT(Math.floor(Math.random()*TH.length));
 
-// genre picker
 function mood(m){
+  randMode=(m==="all");
   var P=[];
-  tracks.forEach(function(t,x){if(t.m==m)P.push(x)});
-  if(!P.length)P=tracks.map(function(_,x){return x});
-  pool=P;i=P[Math.floor(Math.random()*P.length)];pos=0;bad=false;
+  if(m==="all"){
+    P=tracks.map(function(_,x){return x});
+  }else{
+    tracks.forEach(function(t,x){if(t.m==m)P.push(x)});
+    if(!P.length)P=tracks.map(function(_,x){return x});
+  }
+  pool=P;
+  i=P[Math.floor(Math.random()*P.length)];
+  pos=0;bad=false;
   au.src=encodeURI(tracks[i].src);
   $("md").hidden=true;
   play(true);
@@ -339,18 +345,6 @@ document.querySelectorAll("#md [data-m]").forEach(function(b){b.onclick=function
 $("mdb").onclick=function(){$("md").hidden=false};
 $("mskip").onclick=function(){$("md").hidden=true};
 
-// loading screen: stays at least 0.7s, gives up waiting after 3s
-var t0=Date.now(),ldDone=false;
-function ready(){
-  if(ldDone)return;
-  var w=700-(Date.now()-t0);
-  if(w>0){setTimeout(ready,w);return}
-  ldDone=true;$("ld").classList.add("out");setTimeout(function(){if($("ld"))$("ld").remove()},600);
-}
-(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){if(document.readyState=="complete")ready();else window.addEventListener("load",ready)});
-setTimeout(ready,3000);
-
-// player controls
 $("pp").onclick=function(){play(!on)};
 $("nx").onclick=function(){go(1)};
 $("prev").onclick=function(){go(-1)};
@@ -362,7 +356,6 @@ $("bar").onclick=function(e){
   draw();
 };
 
-// keyboard shortcuts
 document.addEventListener("keydown",function(e){
   if(e.target.tagName==="BUTTON"||e.target.id==="meta")return;
   if(e.code==="Space"){e.preventDefault();play(!on)}
@@ -370,7 +363,6 @@ document.addEventListener("keydown",function(e){
   else if(e.code==="ArrowLeft")go(-1);
 });
 
-// about dialog
 $("abl").onclick=function(){$("about").hidden=false};
 $("abx").onclick=function(){$("about").hidden=true};
 $("about").onclick=function(e){if(e.target===this)this.hidden=true};
